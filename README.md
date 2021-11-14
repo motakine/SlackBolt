@@ -80,12 +80,16 @@ buildに必要なファイルをプロジェクトルートに作成する。
   - これは `pip install -r requirements.txt` でパッケージを一括でインストールできるやつ。
   - `pip freeze` で現在の環境にインストールされたパッケージとバージョンが出力されるが、リダイレクト `>` でファイルに出力できる。
   - つまり `pip freeze > requirements.txt` で生成されたものを置けばよい。
+  - `conda` で似たようなことをする必要はない。
 
 デプロイはHerokuのアプリのページの `Deploy` タブからGitHubを選び、連携を行うと楽。
 
+- **但し今回の場合は後述の `Heroku CLI` で `heroku ps:scale pbot=1 --app <appname>` するか `Resources` タブから `pbot python app.py` の右側にあるスイッチをONにするかしてサーバ？を起動？しておかないとbotが動かない。**
+  - なお `<appname>` はHerokuアプリの名前。URLの一部にもみられる。
 - `Connect to GitHub` を押し、 `Authorize heroku` したらリポジトリを選択して `Connect` 。
 - `Automatic deploys` ではリモートリポジトリの選択したブランチにpushしたものが自動的にデプロイされる。
 - `Manual deploy` ではリモートリポジトリの選択したブランチを手動でデプロイできる。
+  - 手動デプロイが終わると `Your app was successfully deployed.` `View` というボタンが出てきてクリックするが **これが罠でもある** 。
 
 なお何かエラーなどがあった時の確認のためにコマンドラインインターフェースとやらをインストールしておいたほうがよい？
 
@@ -93,7 +97,19 @@ buildに必要なファイルをプロジェクトルートに作成する。
 - Windowsのコマンドプロンプトでなんやかんや
   - `heroku --version` でバージョン確認
   - `heroku login` でブラウザに遷移してログイン
-- デプロイしたアプリケーションにエラーが発生した場合、ログの確認は `heroku logs --tail` で行える模様。
+
+デプロイでbuildは通ってるくせに `View` すると `Application error An error occurred in the application and your page could not be served...` とかのエラーが出る。
+
+- 検索すると、リポジトリをHerokuのリモートリポジトリに
+- 同じ画面に `heroku logs --tail` でログをチェックできるとの記述があるのでコマンドプロンプトで実行すると `Error: Missing required flag: -a, --app APP  app to run command against` というエラーが。
+- これは `heroku logs --tail` 自体のエラーで、正しくは `heroku logs --tail --app <appname>` とするのが正解らしい。[参考](https://stackoverflow.com/questions/48696878/missing-required-flag-heroku-tail)
+  - ここで `<appname>` はHerokuアプリの名前。URLの一部にもみられる。
+  - `heroku Error Missing required flag` とかで検索すると、Herokuのサーバにリポジトリを紐付けていないとかがよくヒットするが全く関係なかった。そもそも今回はGitHub連携でデプロイしており、その上で更に紐付けするのはマズそう。[参考](https://devcenter.heroku.com/articles/github-integration)のFAQの最初参照。
+- それを実行すると、 `build` は成功しているものの、 `View` を押したタイミングで `at=error code=H14 desc="No web processes running"...` というエラーらしきものが出ている。
+  - [公式ドキュメント](https://devcenter.heroku.com/articles/error-codes#h14-no-web-dynos-running)には `heroku ps:scale web=1` しろと書かれているが、今回はそれっぽいことをしても改善なし。そもそも `web` は特別なやつそうなので関係なさそう。
+  - しかしこれまでの手順をきちんと踏んでいればslackbotは普通に動いている。
+  - Webページを表示するようなプロセスが存在しなかった的な意味合い？
+  - 結局気にしなくて良さそう。
 
 
 ## その他メモ
