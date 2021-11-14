@@ -62,8 +62,9 @@ wincertstore              0.2              py38haa95532_2
 
 アカウントを作成し、アプリケーションを作成してSettingタブから設定を行う。
 
-- 環境変数を設定
-- `Add Buildpack` から `Python` を指定
+- `Config Vars` の `Reveal Config Vars` から環境変数を設定
+  - GitHubとの連携でデプロイする場合、 **`.env`ファイルに含まれる環境変数は`.gitignore`で無視されるため反映されない！** ここでしっかり設定しておくこと。
+- `Buildpacks` の `Add Buildpack` から `Python` を指定
 
 buildに必要なファイルをプロジェクトルートに作成する。
 
@@ -80,13 +81,19 @@ buildに必要なファイルをプロジェクトルートに作成する。
   - `pip freeze` で現在の環境にインストールされたパッケージとバージョンが出力されるが、リダイレクト `>` でファイルに出力できる。
   - つまり `pip freeze > requirements.txt` で生成されたものを置けばよい。
 
-デプロイはHerokuのアプリのページの `Deploy` タブに書かれていることを行えばよい。
+デプロイはHerokuのアプリのページの `Deploy` タブからGitHubを選び、連携を行うと楽。
 
-- なんか[Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line)とかいうのをインストールする
-- コマンドラインでなんやかんや
+- `Connect to GitHub` を押し、 `Authorize heroku` したらリポジトリを選択して `Connect` 。
+- `Automatic deploys` ではリモートリポジトリの選択したブランチにpushしたものが自動的にデプロイされる。
+- `Manual deploy` ではリモートリポジトリの選択したブランチを手動でデプロイできる。
+
+なお何かエラーなどがあった時の確認のためにコマンドラインインターフェースとやらをインストールしておいたほうがよい？
+
+- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line)とかいうのをインストールする
+- Windowsのコマンドプロンプトでなんやかんや
   - `heroku --version` でバージョン確認
   - `heroku login` でブラウザに遷移してログイン
-- コマンドラインで `heroku login` し、
+- デプロイしたアプリケーションにエラーが発生した場合、ログの確認は `heroku logs --tail` で行える模様。
 
 
 ## その他メモ
@@ -94,7 +101,10 @@ buildに必要なファイルをプロジェクトルートに作成する。
 Herokuの参考：
 
 - [Python x Herokuで作る 雑談slack bot](https://www.slideshare.net/dcubeio/python-heroku-slack-bot)
+  - Herokuに上げるときに必要なファイルはこれを見よう。
 - [PythonでSlackBot開発②「Herokuにデプロイする」](https://www.virtual-surfer.com/entry/2018/04/05/190000)
+- [heroku 初級編 - GitHub から deploy してみよう -](https://qiita.com/sho7650/items/ebd87c5dc2c4c7abb8f0)
+  - デプロイに関してはこれがよい。
 
 
 <!-- Markdown links -->
