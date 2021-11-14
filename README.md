@@ -71,10 +71,10 @@ buildに必要なファイルをプロジェクトルートに作成する。
   - Herokuでデプロイ時に実行するプロセスの定義。例： `pbot: python run.py`
     - これで `$ pbot` というコマンドで `$ python run.py` を呼び出せる。
   - `プロセス名の定義: 実行される処理` という感じ。プロセス名の定義は `web` 以外なら任意の文字列でOK、実行される処理はローカルと同じ実行コマンド。
-- requirements.txt
+- runtime.txt
   - 実行Pythonのバージョンの定義。例： `python-3.6.0`
   - 確認には `$ python -V` を使う。
-- runtime.txt
+- requirements.txt
   - Pythonの依存ライブラリの定義。例： `slackbot==0.4.1`
   - これは `pip install -r requirements.txt` でパッケージを一括でインストールできるやつ。
   - `pip freeze` で現在の環境にインストールされたパッケージとバージョンが出力されるが、リダイレクト `>` でファイルに出力できる。
